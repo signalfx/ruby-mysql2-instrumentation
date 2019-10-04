@@ -44,6 +44,7 @@ RSpec.describe Mysql2::Instrumentation do
       client.query(statement)
 
       expect(tracer.spans.count).to eq 1
+      expect(tracer.spans.last.operation_name).to eq 'SELECT'
 
       expected_tags = {
         'component' => 'mysql2',
@@ -63,7 +64,7 @@ RSpec.describe Mysql2::Instrumentation do
     end
 
     it 'sets the error tag and log' do
-      statement = "BAD_QUERY"
+      statement = 1234
       begin
         client.query(statement)
       rescue => e
@@ -79,6 +80,7 @@ RSpec.describe Mysql2::Instrumentation do
         'error' => true,
       }
       expect(tracer.spans.last.tags).to eq expected_tags
+      expect(tracer.spans.last.operation_name).to eq 'sql.query'
 
       expect(tracer.spans.last.logs.last[:key]).to eq('message')
       expect(tracer.spans.last.logs.last[:value]).to eq('error')

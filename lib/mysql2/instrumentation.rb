@@ -37,7 +37,16 @@ module Mysql2
               'span.kind' => 'client',
             }
 
-            span = ::Mysql2::Instrumentation.tracer.start_span(sql, tags: tags)
+            operation_name = 'sql.query'
+            begin
+              candidate = sql.split(' ')[0]
+              unless candidate == nil or candidate.empty?
+                operation_name = candidate
+              end
+            rescue
+            end
+            span = ::Mysql2::Instrumentation.tracer.start_span(operation_name, tags: tags)
+
             query_original(sql, options)
           rescue => error
             span.set_tag("error", true)
