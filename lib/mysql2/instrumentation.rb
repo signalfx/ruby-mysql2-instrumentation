@@ -50,9 +50,7 @@ module Mysql2
 
             query_original(sql, options)
           rescue => error
-            span.set_tag("error", true)
-            span.log_kv(key: "message", value: error.message)
-
+            span.record_exception(error)
             raise error
           ensure
             span.finish if span
