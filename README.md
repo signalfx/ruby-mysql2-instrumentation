@@ -12,7 +12,7 @@ This gem provides OpenTracing autoinstrumentation for [Mysql2](https://github.co
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'mysql2-instrumentation'
+gem 'signalfx-mysql2-instrumentation'
 ```
 
 And then execute:
@@ -21,7 +21,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install mysql2-instrumentation
+    $ gem install signalfx-mysql2-instrumentation
 
 ## Usage
 
