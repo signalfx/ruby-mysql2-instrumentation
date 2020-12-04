@@ -65,9 +65,11 @@ RSpec.describe Mysql2::Instrumentation do
 
     it 'sets the error tag and log' do
       statement = 1234
+      error = nil
       begin
         client.query(statement)
       rescue => e
+        error = e
       end
 
       expected_tags = {
@@ -78,12 +80,12 @@ RSpec.describe Mysql2::Instrumentation do
         'db.statement' => statement.to_s,
         'db.user' => username,
         'error' => true,
+        'sfx.error.kind' => error.class.to_s,
+        'sfx.error.message' => error.to_s,
+        'sfx.error.stack' => error.backtrace.join('\n')
       }
       expect(tracer.spans.last.tags).to eq expected_tags
       expect(tracer.spans.last.operation_name).to eq 'sql.query'
-
-      expect(tracer.spans.last.logs.last[:key]).to eq('message')
-      expect(tracer.spans.last.logs.last[:value]).to eq('error')
     end
   end
 end
